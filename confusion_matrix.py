@@ -190,7 +190,7 @@ def normalised_dataframe(files: list[str]) -> list[DataFrame]:
         path = os.path.join(parent_dir, directory)
         if not os.path.isdir(path):
             os.mkdir(path)
-        tracker[files.index(file)].to_csv(path+"/"+file_name)  # store the dataframe in a .csv format
+        tracker[files.index(file)].to_csv(path + "/" + file_name)  # store the dataframe in a .csv format
     return tracker
 
 
