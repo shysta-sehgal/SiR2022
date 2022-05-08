@@ -1,6 +1,7 @@
 """
-This module produces the confusion matrix for the Chomsky-Halle features dataset and the HS99 dataset. It also finds the
-correlation of the confusability values generated for phoneme pairings that are the same in both the datasets.
+This module produces the confusion matrix for the Chomsky-Halle 1968 features dataset and the Harm and Seidenberg 1999
+dataset. It also finds the correlation of the confusability values generated for phoneme pairings that are the same in
+both the datasets.
 
 Precondition: The dataset is in a .txt file in the format described below:
 The first row is formatted in the following manner always: [Features, phoneme_1, phoneme_2,..., phoneme_k]
@@ -110,8 +111,9 @@ def get_overlap(phoneme_dic: dict[str, list[str]]) -> list[Union[list[list[str]]
     temp = []  # list to store phoneme pairings that have already been stored in the dictionary to avoid duplicates
     for key in phoneme_dic:
         for key2 in phoneme_dic:
-            if key2 != key and [key, key2] not in temp and [key2, key] not in temp:  # check point to avoid adding same
-                # keys and phoneme pairings already in temp
+
+            # check point to avoid adding same keys and phoneme pairings already in temp
+            if key2 != key and [key, key2] not in temp and [key2, key] not in temp:
                 j = 0  # counter for overlap values between each phoneme
                 for k in range(len(phoneme_dic[key])):
                     if phoneme_dic[key][k] == phoneme_dic[key2][k]:
@@ -123,6 +125,32 @@ def get_overlap(phoneme_dic: dict[str, list[str]]) -> list[Union[list[list[str]]
                 temp.append([key, key2])
                 temp.append([key2, key])
     return [phoneme_pairings, overlap_values]
+
+
+def get_phoneme_corr(phoneme_dic: dict[str, list[str]]) -> list[Union[list[list[str]], list[ndarray]]]:
+    """
+    This function finds the correlation for the featural values for each phoneme pairing in the data
+    :param phoneme_dic: a dictionary that contains phonemes as keys and a list of featural values as its value
+    :return: a list containing a list of phoneme pairings and a list containing correlation values
+    """
+    phoneme_pairings = []
+    corr_values = []
+    temp = []  # list to store phoneme pairings that have already been stored in the dictionary to avoid duplicates
+    for key in phoneme_dic:
+        for key2 in phoneme_dic:
+
+            # check point to avoid adding same keys and phoneme pairings already in temp
+            if key2 != key and [key, key2] not in temp and [key2, key] not in temp:
+                corr = np.corrcoef(list(np.float_(phoneme_dic[key])), list(np.float_(phoneme_dic[key2])))
+                phoneme_pairings.append([key, key2])  # add phoneme pair to the list
+
+                # store correlation values at the corresponding index in a different list
+                corr_values.append(corr[1][0])
+
+                # store the phoneme pairs already analysed in temp
+                temp.append([key, key2])
+                temp.append([key2, key])
+    return [phoneme_pairings, corr_values]
 
 
 def confusion_matrix(phoneme_tuple_dic: dict[tuple, int]) -> DataFrame:
@@ -156,11 +184,13 @@ def confusion_matrix(phoneme_tuple_dic: dict[tuple, int]) -> DataFrame:
     return confusion_mat
 
 
-def normalised_dataframe(files: list[str]) -> list[DataFrame]:
+def normalised_dataframe(files: list[str], overlap: bool) -> list[DataFrame]:
     """
     This function returns a list containing dataframes and stores it in a .csv file. The dataframe contains phoneme
     pairings and their normalised values.
     :param files: a list containing .txt files from which to read data
+    :param overlap: if true, find the number of features common for each phoneme pair, else find the correlation for
+    each phoneme pair
     :return: a list of dataframes that contain phoneme pairings and their normalised confusability values.
     """
     tracker = []  # a list to store the dataframes generated for both datasets
@@ -169,15 +199,18 @@ def normalised_dataframe(files: list[str]) -> list[DataFrame]:
         feature_lis = get_features(file)  # get the feature list for the phonemes
         phoneme_lis = get_phonemes(file)  # get the list of phonemes from the file
         dictionary = feature_vector(feature_lis, phoneme_lis)  # get the feature vectors for the phonemes
-        overlap_arr = get_overlap(dictionary)  # get the overlap values for the phoneme pairings
+        if overlap:
+            arr = get_overlap(dictionary)  # get the overlap values for the phoneme pairings
+        else:
+            arr = get_phoneme_corr(dictionary)
         # make a dataframe with phoneme pairings column and overlap / correlation values column
-        df = pd.DataFrame(list(zip(overlap_arr[0], overlap_arr[1])), columns=['phonemes', 'overlap'])
-        overlap_array = list(df['overlap'].copy())
+        df = pd.DataFrame(list(zip(arr[0], arr[1])), columns=['phonemes', 'overlap / correlation'])
+        arr = list(df['overlap / correlation'].copy())
 
-        # normalise the overlap / correlation values
-        for j in range(len(overlap_array)):
-            overlap_array[j] = round(overlap_array[j] / line_count, 2)
-        df['overlap'] = overlap_array  # change the overlap column of the dataframe to normalised values
+        if overlap:  # normalise the overlap values
+            for j in range(len(arr)):
+                arr[j] = round(arr[j] / line_count, 2)
+        df['overlap / correlation'] = arr  # change the overlap column of the dataframe to normalised values
         tracker.append(df)  # add the dataframe to the tracker
 
         # output filename
@@ -194,21 +227,23 @@ def normalised_dataframe(files: list[str]) -> list[DataFrame]:
     return tracker
 
 
-def find_correlation(file1: str, file2: str) -> tuple[ndarray, str]:
+def find_correlation(file1: str, file2: str, overlap: bool) -> tuple[ndarray, str]:
     """
     This functions finds the phoneme pairs that are the same in the two .txt files and reports the correlation between
     either the overlap values or the correlation values for those pairs
     :param file1: a .txt file that contains the phonemes and their features as values +1, -1, 0
     :param file2: a .txt file that contains the phonemes and their features as values +1, -1, 0
+    :param overlap: if true, find the number of features common for each phoneme pair, else find the correlation for
+    each phoneme pair
     :return: a tuple containing the numpy array with the correlation values and the number of phoneme pairs that the
     two files have in common
     """
-    tracker = normalised_dataframe([file1, file2])
+    tracker = normalised_dataframe([file1, file2], overlap)
     similarity_list = {}  # dictionary with phoneme pairings and normalised values in the dataset for the given files
     phoneme_1_copy = list(tracker[0]["phonemes"].copy())
     phoneme_2_copy = list(tracker[1]["phonemes"].copy())
-    overlap_1_copy = list(tracker[0]["overlap"].copy())
-    overlap_2_copy = list(tracker[1]["overlap"].copy())
+    overlap_1_copy = list(tracker[0]["overlap / correlation"].copy())
+    overlap_2_copy = list(tracker[1]["overlap / correlation"].copy())
     corr_1 = []
     corr_2 = []
     common_pairs = 0
@@ -236,19 +271,21 @@ def find_correlation(file1: str, file2: str) -> tuple[ndarray, str]:
                 corr_1.append(overlap_1_copy[j])
                 corr_2.append(overlap_2_copy[y])
                 common_pairs += 1
-    return np.corrcoef(corr_1, corr_2), "The number of common_pairs are " + str(common_pairs)
+    return np.corrcoef(corr_1, corr_2)[1][0], "The number of common_pairs are " + str(common_pairs)
 
 
-def make_conf_matrix(file: str) -> None:
+def make_conf_matrix(file: str, overlap: bool) -> None:
     """
-    This function returns the confusion matrix with the normalised correlation or overlap values between phoneme pairs
+    This function returns the confusion matrix with the correlation or normalised overlap values between phoneme pairs
     in a .csv file.
     :param file: a .txt file that contains the phonemes and their features as values +1, -1, 0
+    :param overlap: if true, find the number of features common for each phoneme pair, else find the correlation for
+    each phoneme pair
     :return: None
     """
-    df_tracker = normalised_dataframe([file])
+    df_tracker = normalised_dataframe([file], overlap)
     phoneme_copy = list(df_tracker[0]["phonemes"].copy())
-    overlap_copy = list(df_tracker[0]["overlap"].copy())
+    overlap_copy = list(df_tracker[0]["overlap / correlation"].copy())
     matrix = {}
     for i in range(len(phoneme_copy)):
         tup_matrix = tuple(phoneme_copy[i])
@@ -265,10 +302,14 @@ def make_conf_matrix(file: str) -> None:
 
 
 if __name__ == "__main__":
-    make_conf_matrix("HS99.txt")  # make a confusion matrix and output to csv for any .txt file in the specified format
+    # change false to true for overlap method
 
-    # find the correlation between overlap values or correlation values between two .txt files
-    print(find_correlation("HS99.txt", "CH68.txt"))
+    # make a confusion matrix and output to csv for any .txt file in the specified format
+    make_conf_matrix("CH68.txt", False)
+    make_conf_matrix("HS99.txt", False)
 
-    # normalise the overlap or correlation values for phoneme pairs and output it to .csv file for a list of .txt files
-    normalised_dataframe(["CH68.txt", "HS99.txt"])
+    # find the correlation between correlation values between two .txt files
+    print(find_correlation("HS99.txt", "CH68.txt", False))
+
+    # normalise the correlation values for phoneme pairs and output it to .csv file for a list of .txt files
+    normalised_dataframe(["CH68.txt", "HS99.txt"], False)
