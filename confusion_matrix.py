@@ -304,6 +304,11 @@ def make_conf_matrix(file: str, overlap: bool) -> None:
 
 
 if __name__ == "__main__":
+    # uncomment the following line to check if each row in the data has the same number of values (this is not a
+    # complete check for the correctness of the data and its formatting)
+
+    # read_file("FF.txt")
+
     # change false to true for overlap method
 
     # make a confusion matrix and output to csv for any .txt file in the specified format
