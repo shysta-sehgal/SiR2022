@@ -5,8 +5,9 @@ both the datasets.
 
 Precondition: The dataset is in a .txt file in the format described below:
 The first row is formatted in the following manner always: [Features, phoneme_1, phoneme_2,..., phoneme_k]
-The subsequent rows are formatted in the following manner always: [{feature_name}, value of either -1, 1, or
-0 for phoneme_1, value for phoneme_2,..., value for phoneme_k]
+The subsequent rows are formatted in the following manner always: [{feature_name}, value between -1 to 1 for phoneme_1,
+value for phoneme_2,..., value for phoneme_k]
+There should be no empty lines in the file
 """
 import pathlib
 import os
@@ -21,7 +22,7 @@ def read_file(fil: str) -> str:
     """
     This function reads a file to check if the length of each row is the same in the dataset. This helps ensure there is
     no missing data or extra data in the file.
-    :param fil: a .txt file that contains the phonemes and their features as values +1, -1, 0
+    :param fil: a .txt file that contains the phonemes and their features as values between -1 to 1
     :return: a string that gives the message if the file is properly formatted or not
     """
     with open(fil) as f:
@@ -39,7 +40,7 @@ def read_file(fil: str) -> str:
 def get_phonemes(fil: str) -> list[str]:
     """
     This function gets the list of phonemes from the file and stores them in an array.
-    :param fil: a .txt file that contains the phonemes and their features as values +1, -1, 0
+    :param fil: a .txt file that contains the phonemes and their features as values between -1 to 1
     :return: a list containing phoneme strings
     """
     with open(fil) as f:
@@ -54,7 +55,7 @@ def get_phonemes(fil: str) -> list[str]:
 def get_file_length(fil: str) -> int:
     """
     This function returns the number of total features in the .txt file.
-    :param fil: a .txt file that contains the phonemes and their features as values +1, -1, 0
+    :param fil: a .txt file that contains the phonemes and their features as values between -1 to 1
     :return: an integer value of the total number of features in the file
     """
     with open(fil) as f:
@@ -66,7 +67,7 @@ def get_file_length(fil: str) -> int:
 def get_features(fil: str) -> list[list[str]]:
     """
     This function returns the feature value for each phoneme for all the features in the file.
-    :param fil: a .txt file that contains the phonemes and their features as values +1, -1, 0
+    :param fil: a .txt file that contains the phonemes and their features as values between -1 to 1
     :return: a list containing a list of values. Each nested list contains feature values for each phoneme for one
     feature.
     """
@@ -142,6 +143,7 @@ def get_phoneme_corr(phoneme_dic: dict[str, list[str]]) -> list[Union[list[list[
             # check point to avoid adding same keys and phoneme pairings already in temp
             if key2 != key and [key, key2] not in temp and [key2, key] not in temp:
                 corr = np.corrcoef(list(np.float_(phoneme_dic[key])), list(np.float_(phoneme_dic[key2])))
+                corr[1][0] = round(corr[1][0], 2)
                 phoneme_pairings.append([key, key2])  # add phoneme pair to the list
 
                 # store correlation values at the corresponding index in a different list
@@ -231,8 +233,8 @@ def find_correlation(file1: str, file2: str, overlap: bool) -> tuple[ndarray, st
     """
     This functions finds the phoneme pairs that are the same in the two .txt files and reports the correlation between
     either the overlap values or the correlation values for those pairs
-    :param file1: a .txt file that contains the phonemes and their features as values +1, -1, 0
-    :param file2: a .txt file that contains the phonemes and their features as values +1, -1, 0
+    :param file1: a .txt file that contains the phonemes and their features as values between -1 to 1
+    :param file2: a .txt file that contains the phonemes and their features as values between -1 to 1
     :param overlap: if true, find the number of features common for each phoneme pair, else find the correlation for
     each phoneme pair
     :return: a tuple containing the numpy array with the correlation values and the number of phoneme pairs that the
@@ -278,7 +280,7 @@ def make_conf_matrix(file: str, overlap: bool) -> None:
     """
     This function returns the confusion matrix with the correlation or normalised overlap values between phoneme pairs
     in a .csv file.
-    :param file: a .txt file that contains the phonemes and their features as values +1, -1, 0
+    :param file: a .txt file that contains the phonemes and their features as values between -1 to 1
     :param overlap: if true, find the number of features common for each phoneme pair, else find the correlation for
     each phoneme pair
     :return: None
