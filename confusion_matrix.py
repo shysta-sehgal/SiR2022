@@ -321,7 +321,7 @@ if __name__ == "__main__":
     # uncomment the following line to check if each row in the data has the same number of values (this is not a
     # complete check for the correctness of the data and its formatting)
 
-    # read_file("FF.txt")
+    # read_file("json.txt")
 
     all_files = glob.glob('*.txt')
 
@@ -337,5 +337,5 @@ if __name__ == "__main__":
             print(find_correlation(all_files[i], all_files[s], True))
 
     # normalise the correlation values for phoneme pairs and output it to .csv file for a list of .txt files
-    normalised_dataframe(["CH68.txt", "HS99.txt", "FF.txt"], False)
-    normalised_dataframe(["CH68.txt", "HS99.txt", "FF.txt"], True)
+    normalised_dataframe(all_files, False)
+    normalised_dataframe(all_files, True)
