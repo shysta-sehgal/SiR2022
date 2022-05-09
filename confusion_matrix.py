@@ -1,7 +1,7 @@
 """
-This module produces the confusion matrix for the Chomsky-Halle 1968 features dataset and the Harm and Seidenberg 1999
-dataset. It also finds the correlation of the confusability values generated for phoneme pairings that are the same in
-both the datasets.
+This module produces the confusion matrix for the Chomsky-Halle 1968 features dataset, the Harm and Seidenberg 1999
+dataset, and some other datasets. It also finds the correlation of the confusability values generated for phoneme
+pairings that are the same in both the datasets.
 
 Precondition: The dataset is in a .txt file in the format described below:
 The first row is formatted in the following manner always: [Features, phoneme_1, phoneme_2,..., phoneme_k]
@@ -16,6 +16,7 @@ import pandas as pd
 import numpy as np
 from numpy import ndarray
 from pandas import DataFrame
+import glob
 
 
 def read_file(fil: str) -> str:
@@ -196,10 +197,10 @@ def normalised_dataframe(files: list[str], overlap: bool) -> list[DataFrame]:
     :return: a list of dataframes that contain phoneme pairings and their normalised confusability values.
     """
     tracker = []  # a list to store the dataframes generated for both datasets
-    for file in files:
-        line_count = get_file_length(file)
-        feature_lis = get_features(file)  # get the feature list for the phonemes
-        phoneme_lis = get_phonemes(file)  # get the list of phonemes from the file
+    for fil in files:
+        line_count = get_file_length(fil)
+        feature_lis = get_features(fil)  # get the feature list for the phonemes
+        phoneme_lis = get_phonemes(fil)  # get the list of phonemes from the file
         dictionary = feature_vector(feature_lis, phoneme_lis)  # get the feature vectors for the phonemes
         if overlap:
             arr = get_overlap(dictionary)  # get the overlap values for the phoneme pairings
@@ -216,8 +217,8 @@ def normalised_dataframe(files: list[str], overlap: bool) -> list[DataFrame]:
         tracker.append(df)  # add the dataframe to the tracker
 
         # output filename
-        dot_index = file.index(".")
-        file_name = file[:dot_index + 1] + 'csv'
+        dot_index = fil.index(".")
+        file_name = fil[:dot_index + 1] + 'csv'
         parent_dir = pathlib.Path(__file__).parent
 
         # directory for output file
@@ -225,7 +226,12 @@ def normalised_dataframe(files: list[str], overlap: bool) -> list[DataFrame]:
         path = os.path.join(parent_dir, directory)
         if not os.path.isdir(path):
             os.mkdir(path)
-        tracker[files.index(file)].to_csv(path + "/" + file_name)  # store the dataframe in a .csv format
+
+        # store the dataframe in a .csv format
+        if overlap:
+            tracker[files.index(fil)].to_csv(path + "/" + file_name + '_overlap')
+        else:
+            tracker[files.index(fil)].to_csv(path + "/" + file_name + '_correlation')
     return tracker
 
 
@@ -273,34 +279,42 @@ def find_correlation(file1: str, file2: str, overlap: bool) -> tuple[ndarray, st
                 corr_1.append(overlap_1_copy[j])
                 corr_2.append(overlap_2_copy[y])
                 common_pairs += 1
-    return np.corrcoef(corr_1, corr_2)[1][0], "The number of common_pairs are " + str(common_pairs)
+    if overlap:
+        x = "overlap"
+    else:
+        x = "correlation"
+    return round(np.corrcoef(corr_1, corr_2)[1][0], 2), "The number of common_pairs for " + file1 + " " + file2 + \
+        " for " + x + " method is " + str(common_pairs)
 
 
-def make_conf_matrix(file: str, overlap: bool) -> None:
+def make_conf_matrix(fil: str, overlap: bool) -> None:
     """
     This function returns the confusion matrix with the correlation or normalised overlap values between phoneme pairs
     in a .csv file.
-    :param file: a .txt file that contains the phonemes and their features as values between -1 to 1
+    :param fil: a .txt file that contains the phonemes and their features as values between -1 to 1
     :param overlap: if true, find the number of features common for each phoneme pair, else find the correlation for
     each phoneme pair
     :return: None
     """
-    df_tracker = normalised_dataframe([file], overlap)
+    df_tracker = normalised_dataframe([fil], overlap)
     phoneme_copy = list(df_tracker[0]["phonemes"].copy())
     overlap_copy = list(df_tracker[0]["overlap / correlation"].copy())
     matrix = {}
-    for i in range(len(phoneme_copy)):
-        tup_matrix = tuple(phoneme_copy[i])
-        matrix[tup_matrix] = overlap_copy[i]
+    for j in range(len(phoneme_copy)):
+        tup_matrix = tuple(phoneme_copy[j])
+        matrix[tup_matrix] = overlap_copy[j]
     confusion = confusion_matrix(matrix)
-    dot_index = file.index(".")
-    file_name = file[:dot_index] + '_conf_matrix.csv'
+    dot_index = fil.index(".")
+    file_name = fil[:dot_index] + '_conf_matrix'
     parent_dir = pathlib.Path(__file__).parent
     directory = "Results"
     path = os.path.join(parent_dir, directory)
     if not os.path.isdir(path):
         os.mkdir(path)
-    confusion.to_csv(path + '/' + file_name)
+    if overlap:
+        confusion.to_csv(path + '/' + file_name + '_overlap.csv')
+    else:
+        confusion.to_csv(path + '/' + file_name + '_correlation.csv')
 
 
 if __name__ == "__main__":
@@ -309,14 +323,19 @@ if __name__ == "__main__":
 
     # read_file("FF.txt")
 
-    # change false to true for overlap method
+    all_files = glob.glob('*.txt')
 
     # make a confusion matrix and output to csv for any .txt file in the specified format
-    make_conf_matrix("CH68.txt", False)
-    make_conf_matrix("HS99.txt", False)
+    for file in all_files:
+        make_conf_matrix(file, False)
+        make_conf_matrix(file, True)
 
     # find the correlation between correlation values between two .txt files
-    print(find_correlation("HS99.txt", "CH68.txt", False))
+    for i in range(len(all_files)):
+        for s in range(i + 1, len(all_files)):
+            print(find_correlation(all_files[i], all_files[s], False))
+            print(find_correlation(all_files[i], all_files[s], True))
 
     # normalise the correlation values for phoneme pairs and output it to .csv file for a list of .txt files
-    normalised_dataframe(["CH68.txt", "HS99.txt"], False)
+    normalised_dataframe(["CH68.txt", "HS99.txt", "FF.txt"], False)
+    normalised_dataframe(["CH68.txt", "HS99.txt", "FF.txt"], True)
