@@ -218,7 +218,7 @@ def normalised_dataframe(files: list[str], overlap: bool) -> list[DataFrame]:
 
         # output filename
         dot_index = fil.index(".")
-        file_name = fil[:dot_index + 1] + 'csv'
+        file_name = fil[:dot_index + 1]
         parent_dir = pathlib.Path(__file__).parent
 
         # directory for output file
@@ -229,9 +229,9 @@ def normalised_dataframe(files: list[str], overlap: bool) -> list[DataFrame]:
 
         # store the dataframe in a .csv format
         if overlap:
-            tracker[files.index(fil)].to_csv(path + "/" + file_name + '_overlap')
+            tracker[files.index(fil)].to_csv(path + "/" + file_name + '_overlap.csv')
         else:
-            tracker[files.index(fil)].to_csv(path + "/" + file_name + '_correlation')
+            tracker[files.index(fil)].to_csv(path + "/" + file_name + '_correlation.csv')
     return tracker
 
 
