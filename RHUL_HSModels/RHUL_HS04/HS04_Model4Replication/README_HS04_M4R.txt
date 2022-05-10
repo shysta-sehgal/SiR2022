@@ -1,0 +1,19 @@
+HS04_Model4Replication
+
+This collection of files has been compiled to replicate simulations of the triangle model of reading reported in Harm & Seidenberg, 2004 (see H&S2004.pdf). The following three folders can be found within this directory: 
+
+- Patterns: the corpus on which the model was trained; awk scripts that convert the corpus to pattern files used to train the network
+- Training: C script that can be used to build and train a single instantiation of the network
+- Testing: C scripts that can be used to test the model on a range of tasks; R scripts to analyse C test scripts output
+
+Within each folder further README files can be found describing the purpose of each file within the folder and how they can be run.
+
+To run the model you will first need to install the MikeNet neural network simulation environment.
+
+Below are details of the model implemented within this set of files. As the model is a replication of Harm & Seidenberg, 2004 (HS04) below we largely detail how this implementation differs from their original, therefore for further details of the original model see H&S2004.pdf.
+
+A network diagram of the model can be found in HS04 figure 8. Our semantic layer consists of 2446 units, each encoding a single semantic feature. Semantic representations were derived from WordNet and are identical to those used in Chang, Monaghan & Welbourne, 2019. The semantic layer is fully connected to a clean-up layer of 100 units (50 additional units compared to HS04, pilot simulations showed this was required to replicate HS04 level performance), which also feeds back to the semantic layer. A phonological layer of 200 units encodes eight phoneme slots (each 25 units). The phonological layer is also fully connected to it's own clean-up layer consisting of 50 units which also feeds activation back to the phonological layer. Activation from the phonological layer passes to the semantic layer via a hidden layer of 500 units, while a separate hidden layer of 500 units mediates activation from the semantic layer to the phonological layer. An orthographic layer consisting of 364 units (14 letter slots, each 26 units), as used in Chang, Monaghan & Welbourne, 2019, is connected to the semantic layer via a hidden layer consisting of 500 units and to the phonological layer via a hidden layer of 200 units. There are also direct connections from the orthographic layer to the semantic layer and from the orthographic layer to the phonological layer. As in HS04 a training trial lasts 12 time steps, with time divided in to 4 seconds each consisting of 3 steps (i.e. integration constant = 4/12).
+
+The corpus and representations used to train the network (see Patterns/6k_AllReps_8Slot_NxF) are identical to those used in Chang, Monaghan & Welbourne, 2019 and contains 6229 unique words. Frequencies however were compressed into the range 0.2 -> 1 to ensure the network was able to replicate HS04 level performance within an acceptable time frame (i.e. 4 million training trials). In a departure from HS04, weights were not frozen after pre-literacy training, but instead pre-literacy training trials were interleaved with orthographic mapping tasks as pilot simulations showed that freezing weights did not lead to sufficiently high levels of performance post-literacy training. The probability of each task was as follows: Phonology -> Phonology (Pre-literate: 0.1, Literate: 0.05); Phonology -> Semantics (Pre-literate: 0.4, Literate: 0.25); Semantics -> Phonology (Pre-literate: 0.4, Literate: 0.25); Semantics -> Semantics (Pre-literate: 0.1, Literate: 0.05); Orthography -> Semantics & Phonology (Pre-literate: 0.0, Literate: 0.4).
+
+Performance of four instantiations of the model, over 6 million training trials, is reported in the file HS04_TrainingTaskPerformance.pdf. As can be seen from the figures performance plateaus at around 4 million trials at levels similar to those reported in HS04.

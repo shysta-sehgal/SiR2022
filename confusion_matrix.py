@@ -344,6 +344,8 @@ if __name__ == "__main__":
     # read_file("json.txt")
 
     # dictionary of vectors to be converted to .txt format
+    # these values were obtained from Pho_Train_PatGen.awk file in the RHUL_HSModels directory in the repository
+    # these are a replication of HS99 dataset with minor tweaks
     dic_to_txt("pho_train_pat_gen.txt",
                {"p": [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 "b": [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

@@ -1,0 +1,31 @@
+Implementing internal noise
+
+Noise can be introduced to the model as activation passes from one layer to another within the network. This has been used in previous studies to simulate properties such as neurological damage or variation in general efficiency of processing (e.g. general intelligence).
+
+To add noise to a given layer's output manipulate the parameter 'activationNoise' which defines the standard deviation of the gaussian noise added (see Mikenet-v8.0/src/crbp.c for implementation). Example: to introduce Gaussian noise with mean = 0 and sd = 0.2 to the output of the phonological layer in the HS04 network include 'phonology->activationNoise = 0.2' within the 'build_reading_model' function within HS04_Train.c (to implement noise during training) and/or HS04_Test.c (to implement noise during tests). 
+
+Similarly, the parameter 'inputNoise' can be manipulated in the same way to introduce noise to all inputs of a given layer (see Mikenet-v8.0/src/crbp.c for implementation).
+
+
+
+Implementing external noise in training
+
+Two inbuilt Mikenet parameters can be used to implement external noise during the training process. The 'targetNoise' parameter can be used to add noise to the target representation i.e. simulating a noisy teaching signal. While the 'clampNoise' parameter can be used to add noise to the input representation, i.e. to simulate a noisy training environment/noisy input. As in the case of activationNoise and inputNoise the targetNoise and clampNoise parameter define the standard deviation of the Gaussian distribution from which noise is sampled. For example to introduce Gaussian noise with mean = 0 and sd = 0.2 to the 'clamped' input (defined within the training pattern file) to the phonological layer in the HS04 network include 'phonology->clampNoise = 0.2' within the 'build_reading_model' function within HS04_Train.c. 
+
+Similarly, the parameter 'targetNoise' can be manipulated in the same way to introduce noise to the target for any given layer for which targets are provided during training (see Mikenet-v8.0/src/crbp.c for implementation).
+
+
+
+Implementing external noise at test or training
+
+Greater flexibility and control over the noise introduced to the input can be gained by applying noise to the pattern files used to train or test the network. The script NoisyPhoInput_PatGen.awk can be used to generate such noisy patterns from a corpus file that follows the same structure as 6k_AllReps_8Slot_NxF. The script NoisyPhoInput_PatGen.awk has three parameters that can be used to control the type of noise applied to the patterns (flip; noise; full). These parameters must be changed within the awk script before running (lines 44-46).
+
+The 'full' parameter defines whether noise is applied to the full representational vector (If full = 1 then noise is applied to both 0s and 1s) or only active units within the vector (If full = 0 then noise is applied to 1s only). 
+
+The 'flip' parameter defines whether noise is applied in the form of binary flipping of units from either active to inactive (e.g. 1 to 0) or inactive to active (e.g. 0 to 1). When flip = 1 then noise is applied only in the form of binary flips.
+ 
+The 'noise' parameter defines the level of noise applied. When flip = 1, then the noise parameter defines the probability with which a unit is flipped. When flip = 0, then the noise parameter defines the maximum level to which a unit's activation can be corrupted e.g. if noise = 0.2 then an active unit can be assigned any random value between 1 - 0.8, whereas any inactive unit can be assigned any random value between 0 - 0.2 (see NoisyPhoInput_PatGen.awk lines 63 - 70 for implementation).
+
+As an example, to generate phonological input patterns in which active units in the original phonological representation are randomly de-activated with probability 0.1 then parameters within the NoisyPhoInput_PatGen.awk should be set to flip = 1, noise = 0.1, full = 0. The pattern file can then be generated using: 
+
+awk -f NoisyPhoInput_PatGen.awk 6k_AllReps_8Slot_NxF > NAME_OF_NOISY_PATTERN_FILE.pat

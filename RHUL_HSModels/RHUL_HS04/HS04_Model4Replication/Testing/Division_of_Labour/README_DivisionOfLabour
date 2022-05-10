@@ -1,0 +1,56 @@
+HS04_Test_NetLesion.c:
+
+The HS04_Test_NetLesion script allows the user to run simulations within the triangle model with specific pathways lesioned/removed. After compiling the script (e.g. make) a command similar to the following will build and run a lesioned instantiation of the model:
+
+./HS04_Test_Net_Lesion -seed 10 -tStep 11 -weights NameofWeightFile -task L_o2p -patterns NameofPatternFile.pat -layer phonology > NameofOutputFile.res
+
+In the above command the parameters are as follows:
+
+- seed = Any random seed between 1 -> 9999
+
+- tStep = The time step at which activity in the output layers is recorded in the output file
+
+- weights = The name of a file containing the weight matrix from a trained network e.g. output of HS04_Train.c
+
+- task = The type of lesion to be applied. The script offers four options: L_o2p = a network consisting of only the direct route from orthography to phonology; L_o2s = a network consisting of only the direct route from orthography to semantics; L_o2pVs = a network consisting of only indirect route from orthograpy to phonology via semantics (i.e. no direct orthography to phonology path); L_o2sVp = a network consisting of only indirect route from orthography to semantics via phonology (i.e. no direct orthography to semantics path). 
+
+- patterns = the patterns/trials on which the network will be tested
+
+- layer = the layer of the network for which activation will be reported in the output file (e.g. semantic or phonology)
+
+The script will 'test' the given network in exactly the same way as HS04_Test.c (see README_testing.txt) although in this case with a lesioned version of the network. Therefore the output will contain a row for each trial in the pattern file. The first column of each row contains the trial name (i.e. TAG Word: *), this is followed by a vector containing the activation of each unit within the defined 'layer' at the given time step (tStep) within the trial.
+
+
+
+HS04_Test_Activation.c:
+
+The HS04_Test_Activation script allows the user to output the mean quantity of activation entering a unit within a given layer of the network from a given path (see HS04: Simulation 6, figure 12 and/or Smith, Monaghan & Huettig, 2021: Division of labour measures). After compiling the script (e.g. make) the script can be run using a line of code similar to that below which will then build and test a given instantiation of the triangle model (i.e. network trained by HS04_Train.c):
+
+./HS04_Test_Activation -seed 10 -tStep 11 -weigths NameofWeightFile -patterns NameofPatternFile.pat > NameofOutputFile.res
+
+In the above command the parameters are as follows:
+
+- seed = Any random seed between 1 -> 9999
+
+- tStep = The time step on which activity is recorded in the output file
+
+- weights = The name of a file containing the weight matrix from a trained network e.g. output of HS04_Train.c
+
+- patterns = the patterns/trials on which the network will be tested
+
+The script will 'test' the given network in exactly the same way as HS04_Test.c (see README_testing.txt). However, the output file will record for each layer within the network the mean activation entering each unit within each layer from a given path. This is calculated simply by summing, for each path entering each output layer in the network, the activation entering each individual unit in the output layer from a given path and then dividing this total by the number of units within the output layer. The output will contain a row for each trial in the pattern file. The first column of each row contains the trial name (i.e. TAG Word: *), this is followed six further columns each containing the mean activation entering an output layer unit from one of the following paths listed below in the order they are recorded in the output file.
+
+- O2S: activation entering units in the semantic layer from the direct orthography to semantic connections and the orthography to hidden layer to semantic connections.
+
+- O2P: activation entering units in the phonological layer from the direct orthography to phonology connections and the orthography to hidden layer to phonology connections.
+
+- C2P: activation entering units in the phonological layer from the phonological clean-up layer connections.
+
+- C2S: activation entering units in the semantic layer from the semantic clean-up layer connections.
+
+- S2P: activation entering units in the phonological layer from the semantic to hidden layer to phonology connections.
+
+- P2S: activation entering units in the semantic layer from the phonology to hidden layer to semantics connections.
+
+
+
