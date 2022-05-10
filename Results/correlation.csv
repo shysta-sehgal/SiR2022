@@ -1,0 +1,6 @@
+,Files,FF.txt,CH68.txt,HS99.txt,json.txt,pho_train_pat_gen.txt
+0,FF.txt,,0.7,0.51,0.72,0.52
+1,CH68.txt,,,0.56,0.78,0.59
+2,HS99.txt,,,,0.58,0.58
+3,json.txt,,,,,0.67
+4,pho_train_pat_gen.txt,,,,,

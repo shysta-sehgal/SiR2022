@@ -176,7 +176,7 @@ def confusion_matrix(phoneme_tuple_dic: dict[tuple, int]) -> DataFrame:
     phoneme_2 = list(dict.fromkeys(first_row))
 
     # make a pandas dataframe with the first column and the first row
-    confusion_mat = pd.DataFrame(list(phoneme_1), columns=['phonemes'])
+    confusion_mat = pd.DataFrame(list(phoneme_1), columns=["phonemes"])
     confusion_mat = confusion_mat.reindex(columns=confusion_mat.columns.tolist() + phoneme_2)
 
     # fill in the dataframe with the normalised overlap / correlation values
@@ -347,6 +347,41 @@ def dic_to_txt(name: str, phoneme_dic: dict[str, list[int]]) -> None:
     f.close()
 
 
+def corr_files(all_fil: list[str], overlap: bool) -> None:
+    """
+    This function makes a matrix that shows the correlation between each pair of dataset in all_fil, either for the
+    overlap method or the correlation method
+    :param all_fil: a list of .txt files for which the user wants to find the correlation
+    :param overlap:  if true, find the number of features common for each phoneme pair, else find the correlation for
+    each phoneme pair
+    :return: None
+    """
+    dic = {}
+    confusion_mat = pd.DataFrame(all_fil, columns=["Files"])
+    confusion_mat = confusion_mat.reindex(columns=confusion_mat.columns.tolist() + all_fil)
+    for j in range(len(all_fil)):
+        for k in range(j + 1, len(all_fil)):
+            if overlap:
+                corr = find_correlation(all_fil[j], all_fil[k], True)
+                dic[(all_fil[j], all_fil[k])] = corr[0]
+            else:
+                corr = find_correlation(all_fil[j], all_fil[k], False)
+                dic[(all_fil[j], all_fil[k])] = corr[0]
+    for col in confusion_mat.columns[1:]:
+        for k in range(len(all_fil)):
+            if (confusion_mat["Files"][k], col) in dic:
+                confusion_mat.at[k, col] = dic[confusion_mat["Files"][k], col]
+    parent_dir = pathlib.Path(__file__).parent
+    directory = "Results"
+    path = os.path.join(parent_dir, directory)
+    if not os.path.isdir(path):
+        os.mkdir(path)
+    if overlap:
+        confusion_mat.to_csv(path + '/' + 'overlap.csv')
+    else:
+        confusion_mat.to_csv(path + '/' + 'correlation.csv')
+
+
 if __name__ == "__main__":
     # uncomment the following line to check if each row in the data has the same number of values (this is not a
     # complete check for the correctness of the data and its formatting)
@@ -402,14 +437,17 @@ if __name__ == "__main__":
         make_conf_matrix(file, False)
         make_conf_matrix(file, True)
 
-    # find the correlation between correlation values between two .txt files
-    for i in range(len(all_files)):
-        for s in range(i + 1, len(all_files)):
-            print(find_correlation(all_files[i], all_files[s], False))
-            print(find_correlation(all_files[i], all_files[s], True))
+    # find the correlation between correlation values between .txt files using correlation and overlap methods
+    corr_files(all_files, False)
+    corr_files(all_files, True)
 
     # normalise the correlation values for phoneme pairs and output it to .csv file for a list of .txt files
     normalised_dataframe(all_files, False)
     normalised_dataframe(all_files, True)
 
-# confusion matrix for results, use html table, matplotlib, or pretty table to print results
+    # uncomment the following line of code to convert any csv generated to a html table
+    # change the path according to the csv that needs conversion
+
+    # table = pd.read_csv("Results/correlation.csv")
+    # table.drop(table.columns[0], axis=1, inplace=True)
+    # table.to_html("Table.htm")
