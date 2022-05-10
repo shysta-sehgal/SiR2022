@@ -226,6 +226,11 @@ def normalised_dataframe(files: list[str], overlap: bool) -> list[DataFrame]:
         path = os.path.join(parent_dir, directory)
         if not os.path.isdir(path):
             os.mkdir(path)
+        directory = fil
+        parent_dir = path
+        path = os.path.join(parent_dir, directory)
+        if not os.path.isdir(path):
+            os.mkdir(path)
 
         # store the dataframe in a .csv format
         if overlap:
@@ -308,6 +313,11 @@ def make_conf_matrix(fil: str, overlap: bool) -> None:
     file_name = fil[:dot_index] + '_conf_matrix'
     parent_dir = pathlib.Path(__file__).parent
     directory = "Results"
+    path = os.path.join(parent_dir, directory)
+    if not os.path.isdir(path):
+        os.mkdir(path)
+    directory = fil
+    parent_dir = path
     path = os.path.join(parent_dir, directory)
     if not os.path.isdir(path):
         os.mkdir(path)
