@@ -218,7 +218,7 @@ def normalised_dataframe(files: list[str], overlap: bool) -> list[DataFrame]:
 
         # output filename
         dot_index = fil.index(".")
-        file_name = fil[:dot_index + 1]
+        file_name = fil[:dot_index]
         parent_dir = pathlib.Path(__file__).parent
 
         # directory for output file
@@ -397,7 +397,6 @@ if __name__ == "__main__":
                 "O": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]})
 
     all_files = glob.glob('*.txt')
-
     # make a confusion matrix and output to csv for any .txt file in the specified format
     for file in all_files:
         make_conf_matrix(file, False)
@@ -412,3 +411,5 @@ if __name__ == "__main__":
     # normalise the correlation values for phoneme pairs and output it to .csv file for a list of .txt files
     normalised_dataframe(all_files, False)
     normalised_dataframe(all_files, True)
+
+# confusion matrix for results, use html table, matplotlib, or pretty table to print results
