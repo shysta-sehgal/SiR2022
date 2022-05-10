@@ -445,9 +445,8 @@ if __name__ == "__main__":
     normalised_dataframe(all_files, False)
     normalised_dataframe(all_files, True)
 
-    # uncomment the following line of code to convert any csv generated to a html table
     # change the path according to the csv that needs conversion
-
-    # table = pd.read_csv("Results/correlation.csv")
-    # table.drop(table.columns[0], axis=1, inplace=True)
-    # table.to_html("Table.htm")
+    # phoneme strings do not get mapped exactly to html, but this can be a good tool for visualisation of results
+    table = pd.read_csv("Results/correlation.csv")
+    table.drop(table.columns[0], axis=1, inplace=True)
+    table.to_html("Table.htm")
