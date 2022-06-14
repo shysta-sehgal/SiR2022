@@ -10,5 +10,5 @@ More specific information about the code can be found in the sub-directories.
 ## Future Work 
 Some further work can involve improving the functionality of the word decoder. For example, the current decoder can not pronounce words that include punctuation. 
 The current rule and vocabulary dictionaries for the different curricula also do not include words or GPCs with multiple transcriptions.\
-These are simple fixes, which would not impact the accuracy of different curricula significantly, but if you are interested in contributing to the project, please fork a repository and create a pull request after changes for a review.\
-If you find any bugs, please open an issue. For any other concerns, reach out to shysta.sehgal@mail.utoronto.ca
+These are simple fixes, which would not impact the accuracy of different curricula used in this repository significantly. 
+For any concerns, reach out to shysta.sehgal@mail.utoronto.ca
