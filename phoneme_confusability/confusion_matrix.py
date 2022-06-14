@@ -334,7 +334,9 @@ def dic_to_txt(name: str, phoneme_dic: dict[str, list[int]]) -> None:
     :param phoneme_dic: dictionary with phonemes and their respective feature vectors
     :return: None
     """
-    with open(name, 'w') as f:
+    save_path = "phoneme_confusability"
+    complete_name = os.path.join(save_path, name)
+    with open(complete_name, 'w') as f:
         f.write("Features")
         for key in phoneme_dic:
             f.write(", " + key)
@@ -431,6 +433,7 @@ if __name__ == "__main__":
                 "W": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
                 "O": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]})
 
+    os.chdir("phoneme_confusability")
     all_files = glob.glob('*.txt')
     # make a confusion matrix and output to csv for any .txt file in the specified format
     for file in all_files:

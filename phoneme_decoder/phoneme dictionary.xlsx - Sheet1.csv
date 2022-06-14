@@ -1,0 +1,114 @@
+orthography,IPA,arpabet,example word,Type,Jolly Phonics,Letters & Sounds
+au,ɑ,AA,caution,vowel cluster,0,0
+al,ɑ,AA,calm,hybrid,0,0
+ou,ɑ,AA,bought,vowel cluster,0,0
+a,ɑ,AA,want,vowel,0,0
+o,ɑ,AA,bot,vowel,1,1
+aw,ɑ,AA,saw,vowel cluster,0,0
+a,æ,AE,cat,vowel,1,1
+au,æ,AE,laugh,consonant cluster,0,0
+a,ə,AX,about,vowel,0,0
+er,ɚ,AXR,letter,hybrid,1,1
+i,ɪ,IH,bit,vowel,1,1
+ee,i,IY,beet,vowel cluster,1,1
+ea,i,IY,seat,vowel cluster,0,0
+ear,iɹ,IY R,hear,hybrid,0,1
+e,ɛ,EH,bet,vowel,1,1
+air,ɛɹ,EH R,fair,hybrid,0,1
+ur,ɝ,ER,turn,hybrid,0,1
+ear,ɝ,ER,learn,hybrid,0,0
+ir,ɝ,ER,bird,hybrid,0,0,
+er,ɝ,ER,fern,hybrid,1,0
+ure,ɝ,ER,lure,hybrid,0,1
+o,ɔ,AO,story,vowel,0,0
+or,ɔɹ,AO R,order,hybrid,1,1
+ar,ɑɹ,AA R,arm,hybrid,1,1
+u,ʌ,AH,cut,vowel,1,1
+oo,ʊ,UH,good,vowel cluster,1,0
+oo,ʊ,UH,good,vowel cluster,1,0
+oo,ʊ,UW / UH,boot / look,vowel cluster,0,1
+oo,u,UW / UH,boot / look,vowel cluster,0,1
+ew,u,UW,few,hybrid,0,0,1
+ue,ju,UW,cue,vowel cluster,1,0
+e,ɨ,IX,roses,consonant,0,0
+i,ɨ,IX,rabbit,vowel,0,0
+ou,aʊ,AW,loud,vowel cluster,1,0
+ow,aʊ,AW,flower,vowel cluster,0,1
+o,aʊ,AW,cow,vowel,0,0
+uy,aɪ,AY,buy,vowel cluster,0,0
+ye,aɪ,AY,bye,vowel cluster,0,0
+ie,aɪ,AY,lie,vowel cluster,1,0
+i,aɪ,AY,kite,vowel,0,0
+igh,aɪ,AY,sigh,hybrid,0,1
+y,aɪ,AY,my,vowel,0,0
+a,eɪ,EY,late,vowel,0,0
+ai,eɪ,EY,bait,vowel cluster,1,1
+ay,eɪ,EY,day,vowel cluster,0,0
+oe,oʊ,OW,toe,vowel cluster,0,0
+oa,oʊ,OW,coat,vowel cluster,1,1
+ow,oʊ,OW,row,vowel cluster,0,1
+oi,ɔɪ,OY,oil,vowel cluster,1,1
+oy,ɔɪ,OY,boy,vowel cluster,0,0
+bb,b,B,bubble,consonant cluster,2,0
+b,b,B,build,consonant,1,1
+ch,tʃ,CH,check,consonant cluster,1,1
+d,d,D,do,consonant,1,1
+ed,d,D,skilled,hybrid,0,0
+dd,d,D,add,consonant cluster,2,0
+th,ð,DH,that,consonant cluster,0,0
+th,ð,DH,that,consonant cluster,1,0
+th,ð,DH / TH,thin / then,consonant cluster,0,1
+th,θ,DH / TH,thin / then,consonant cluster,0,1
+tt,ɾ,DX,better,consonant cluster,0,0
+dd,ɾ,DX,ladder,consonant cluster,0,0
+le,l̩,EL,bottle,hybrid,0,0
+m,m̩,EM,rhythm ,consonant,0,0
+on,n̩,EN,button,consonant cluster,0,0
+en,n̩,EN,frighten,consonant cluster,0,0
+ph,f,F,phone,consonant cluster,0,0
+f,f,F,fit,consonant,1,1
+ff,f,F,fluffy,consonant cluster,2,1
+g,g,G,good,consonant,1,1
+gg,g,G,toggle,consonant cluster,2,0
+0,g,G,ghost,consonant cluster,0,0
+h,h,H,help,consonant,1,1
+wh,h,H,who,consonant cluster,0,0
+j,dʒ,JH,judge,consonant,1,1
+dg,dʒ,JH,judge,consonant cluster,0,0
+si,dʒ,JH,vision,hybrid,0,0
+ssi,dʒ,JH,fission,hybrid,0,0
+c,k,K,call,consonant,1,1
+qu,kw, K W,quick,consonant cluster,1,1
+ck,k,K,black,consonant cluster,0,1
+cc,k,K,accord,consonant cluster,0,0
+k,k,K,king,consonant,1,1
+x,ks,K S,wax,consonant,1,1
+l,l,L,line,consonant,1,1
+ll,l,L,jelly,consonant cluster,2,0
+m,m,M,moon,consonant,1,1
+mm,m,M,summer,consonant cluster,2,0
+n,n,N,nice,consonant,1,1
+nn,n,N,tennis,consonant cluster,2,0
+ng,ŋ,NG,king,consonant cluster,1,1
+nn,ɾ̃,NX,sinner,consonant cluster,0,0
+pp,p,P,floppy,consonant cluster,2,0
+p,p,P,pat,consonant,1,1
+r,ɹ,R,rain,consonant,1,1
+rr,ɹ,R,squirrel,consonant cluster,2,0
+ss,s,S,bossy,consonant cluster,2,1
+c,s,S,accent,consonant,0,0
+s,s,S,sigh,consonant,1,1
+ti,ʃ,SH,nation,consonant cluster,0,0
+ch,ʃ,SH,chef,consonant cluster,0,0
+sh,ʃ,SH,ship,consonant cluster,1,1
+t,t,T,tag,consonant,1,1
+th,θ,TH,think,consonant cluster,1,0
+v,v,V,van,consonant,1,1
+w,w,W,wise,consonant,1,1
+wh,ʍ,WH,when,consonant cluster,0,0
+y,j,Y,yell,consonant,1,1
+z,z,Z,zoo,consonant,1,1
+zz,z,Z,buzz,consonant cluster,2,1
+se,z,Z,cause,hybrid,0,0
+si,ʒ,ZH,vision,hybrid,0,0
+ssi,ʒ,ZH,fission,hybrid,0,0
